@@ -13,8 +13,8 @@ const INTERVIEW_QUESTIONS = [
   "How do you handle tight deadlines and high-pressure situations?",
   "Explain a complex technical concept to me as if I were a beginner.",
   "Where do you see your career in the next five years?",
-  "Tell me about a time you took the initiative to improve a process."
-  "Why do we hire you..?"
+  "Tell me about a time you took the initiative to improve a process.",
+  "Why do we hire you..?",
   "Tell me about yourself?"
 ];
 
