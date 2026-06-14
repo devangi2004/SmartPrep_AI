@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+const isRecordingRef = useRef(false);
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, TextInput, Platform } from 'react-native';
 import { analyzeInterview } from '../api/practice';
 import { recordPractice } from '../api/dashboard';
@@ -13,6 +14,8 @@ const INTERVIEW_QUESTIONS = [
   "Explain a complex technical concept to me as if I were a beginner.",
   "Where do you see your career in the next five years?",
   "Tell me about a time you took the initiative to improve a process."
+  "Why do we hire you..?"
+  "Tell me about yourself?"
 ];
 
 const InterviewPracticeScreen = () => {
@@ -26,47 +29,93 @@ const InterviewPracticeScreen = () => {
   const [recognition, setRecognition] = useState(null);
 
   useEffect(() => {
-    // Setup Web Speech API if running on a compatible web browser
-    if (Platform.OS === 'web' && window.SpeechRecognition || window.webkitSpeechRecognition) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const rec = new SpeechRecognition();
-      rec.continuous = true;
-      rec.interimResults = true;
-      
-      rec.onresult = (event) => {
-        let fullTranscript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          fullTranscript += event.results[i][0].transcript;
-        }
-        setTranscript(fullTranscript);
-      };
+  if (
+    Platform.OS === 'web' &&
+    (window.SpeechRecognition || window.webkitSpeechRecognition)
+  ) {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
 
-      rec.onerror = (event) => {
-        console.error('Speech recognition error', event.error);
+    const rec = new SpeechRecognition();
+
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = 'en-US';
+
+    rec.onresult = (event) => {
+      let currentTranscript = '';
+
+      for (
+        let i = event.resultIndex;
+        i < event.results.length;
+        i++
+      ) {
+        currentTranscript += event.results[i][0].transcript + ' ';
+      }
+
+      setTranscript((prev) => prev + currentTranscript);
+    };
+
+    rec.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+
+      if (
+        event.error !== 'no-speech' &&
+        event.error !== 'aborted'
+      ) {
         setIsRecording(false);
-      };
-      
-      setRecognition(rec);
-    }
-  }, []);
+        isRecordingRef.current = false;
+      }
+    };
 
+    rec.onend = () => {
+      console.log('Recognition ended');
+
+      if (isRecordingRef.current) {
+        try {
+          rec.start();
+        } catch (err) {
+          console.log('Restart failed:', err);
+        }
+      }
+    };
+
+    setRecognition(rec);
+  }
+}, []);
+  
   const toggleRecording = () => {
-    if (isRecording) {
-      if (recognition) recognition.stop();
-      setIsRecording(false);
-    } else {
-      setTranscript('');
-      if (recognition) {
+  if (isRecording) {
+    isRecordingRef.current = false;
+
+    if (recognition) {
+      recognition.stop();
+    }
+
+    setIsRecording(false);
+  } else {
+    setTranscript('');
+
+    isRecordingRef.current = true;
+
+    if (recognition) {
+      try {
         recognition.start();
         setIsRecording(true);
-      } else {
-        // Fallback for native devices mapped to Expo Go
-        Alert.alert('Speech to text', 'Native speech-to-text requires a custom dev client. Please manually type your response below for this demo.');
-        setIsRecording(true); // just toggle UI state
+      } catch (err) {
+        console.error('Start failed:', err);
       }
-    }
-  };
+    } else {
+      Alert.alert(
+        'Speech to text',
+        'Native speech-to-text requires a custom dev client. Please manually type your response below for this demo.'
+      );
 
+      setIsRecording(true);
+    }
+  }
+};
+  
   const handleAnalyze = async () => {
     if (!transcript.trim()) {
       return Alert.alert('Error', 'Please provide a vocal response or type the transcript first.');
