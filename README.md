@@ -168,19 +168,19 @@ Used for:
 ## 📸 Application Screenshots
 <img width="1918" height="917" alt="Image" src="https://github.com/user-attachments/assets/15698eb9-8a80-4f38-9d7e-285d7d4e9bca" />
 
-### 1. Dashboard
+### 1. AI Question Generator
 <img width="1918" height="920" alt="Image" src="https://github.com/user-attachments/assets/01489b6a-9d65-41a2-83e8-506395d8fc18" />
 
-### 2. AI Question Generator
+### 2. AI Mock Interview
 <img width="1918" height="916" alt="Image" src="https://github.com/user-attachments/assets/bafde916-f6ca-451c-acde-f4a67c3da4ee" />
 
-### 3. AI Mock Interview
+### 3. AI Tutor Chatbot
 <img width="1915" height="911" alt="Image" src="https://github.com/user-attachments/assets/64c5308d-b82e-4f2d-be85-15b2a7763843" />
 
-### 4. AI Tutor Chatbot
+### 4. Online Code Compiler
 <img width="1918" height="912" alt="Image" src="https://github.com/user-attachments/assets/5399c24e-7b25-4adf-840e-5b5b034dc5e1" />
 
-### 5. Online Code Compiler
+### 5. Notes Upload
 <img width="1918" height="918" alt="Image" src="https://github.com/user-attachments/assets/7e388610-c2bd-4683-a329-7c4a590fd983" />
 
 ---
